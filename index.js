@@ -1,4 +1,6 @@
 var Botkit = require('botkit')
+var request = require('request');
+
 
 var token = process.env.SLACK_TOKEN
 
@@ -74,4 +76,14 @@ controller.hears(['attachment'], ['direct_message', 'direct_mention'], function 
 
 controller.hears('.*', ['direct_message', 'direct_mention'], function (bot, message) {
   bot.reply(message, 'Sorry <@' + message.user + '>, I don\'t understand. \n')
+  console.log('GOT A MESSAGE')
+  request.post(
+      'http://9.174.24.190:1880/chat/',
+      { json: { message: message.text } },
+      function (error, response, body) {
+          if (!error && response.statusCode == 200) {
+              console.log(body)
+          }
+      }
+   );
 })
